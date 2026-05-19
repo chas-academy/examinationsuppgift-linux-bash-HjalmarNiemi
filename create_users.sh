@@ -43,7 +43,6 @@ echo "Välkommen $username" > "/home/$username/welcome.txt"
 
 # Lista över andra användare
 
-echo "Andra användare i systemet:" >> "/home/$username/welcome.txt"
 cut -d: -f1 /etc/passwd | grep -v "^$username$" >> "/home/$username/welcome.txt"
 
 # Ge rättigheter till ägaren för welcome.txt
