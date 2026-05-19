@@ -7,8 +7,6 @@ if [ "$EUID" -ne 0 ]; then
 	exit 1
 fi
 
-echo "Scriptet körs som root."
-
 # Skapa användare som skickas in genom lista som argument
 
 for username in "$@"; do
@@ -17,13 +15,19 @@ for username in "$@"; do
 		continue
 	fi
 
-useradd -m "$username"
+	useradd -m "$username"
 
 
-if [ $? -ne 0 ]; then
-	echo "Användaren $username kunde inte skapas."
-	continue
-fi
+	if [ $? -ne 0 ]; then
+		echo "Användaren $username kunde inte skapas."
+		continue
+	fi
+done
+
+for username in "$@"; do
+	if ! id "$username" &>/dev/null; then
+		continue
+	fi
 
 
 # Skapar användarens hemkatalog
@@ -43,7 +47,7 @@ echo "Välkommen $username" > "/home/$username/welcome.txt"
 
 # Lista över andra användare
 
-cut -d: -f1 /etc/passwd | grep -v "^$username$" >> "/home/$username/welcome.txt"
+awk -F: '$3 >= 1000 {print $1}' /etc/passwd | grep -v "^$username$" >> "/home/$username/welcome.txt"
 
 # Ge rättigheter till ägaren för welcome.txt
 
