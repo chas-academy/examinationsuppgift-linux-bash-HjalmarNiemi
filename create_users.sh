@@ -45,7 +45,7 @@ chmod 700 "/home/$username/Documents" "/home/$username/Downloads" "/home/$userna
 
 echo "Välkommen $username" > "/home/$username/welcome.txt"
 
-# Lista över andra användare
+# Lista över andra användare & filtrera bort de med UID under 1000 (systemanvändare tex root)
 
 awk -F: '$3 >= 1000 {print $1}' /etc/passwd | grep -v "^$username$" >> "/home/$username/welcome.txt"
 
